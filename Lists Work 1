@@ -1,0 +1,109 @@
+#1
+def moda(A:[int]):
+  c=0
+  for i in A:
+    a= A.count(i)
+    if a>c: c=a
+  for j in A:
+    a= A.count(j)
+    if a==c:
+      return j,a
+
+#2
+def separate(A:[int]):
+  p=A[0]
+  if A.count(p)==1: return A
+  for i in range(1,len(A)):
+    if A[i]==p:
+      k=i
+      A.pop(k)
+      break
+  A.sort()
+  A.insert(k,p)
+  return A
+
+#3
+def max_sum(A:[int]):
+  s,se,sd,axs,B=0,0,0,0,[]
+  for i in range(len(A)):
+    se+=A[i]
+    if se>=s:
+      s=se
+      k=i
+    if A[i]<0 and A[i+1]<-A[i]:
+      se=0
+  for j in range(len(A)-1,-1,-1):
+    sd+=A[j]
+    if sd>=axs:
+      axs=sd
+      l=j
+    if A[j]<0:
+      sd=0
+  for k in range(l,k+1):
+    B.append(A[k])
+  return B
+print(max_sum([5,2,-2,-7,3,14,10,-3,9,-6,4,1]))
+
+#4
+import math
+def sub_max(A:[int]):
+  BS,k,l,B,t=[],0,0,[],len(A)-1
+  for i in A:
+    m1,m2,AX=i,math.inf,A
+    BS.append(m1)
+    while k!=t:
+      while l!=len(AX):
+        if AX[l]>m1 and AX[l]<=m2:
+          m2=AX[l]
+        l+=1
+      if m1 != max(AX):
+        if m2 not in BS and AX.index(m2)>AX.index(m1): BS.append(m2)
+      if m2 in AX:
+        ind=AX.index(m2)
+        m1=AX[ind]
+      l=0
+      m2=math.inf
+      k+=1
+    if len(B)<=len(BS):B=BS
+    BS=[]
+    k=0
+  return B
+
+#5
+def lexic_sub(n:int):
+  if n<0: return
+  A,c=[],0
+  for i in range(n+1): A.append(0)
+  while c>=0:
+    if A[c]<n:
+      A[c+1]= A[c]+1
+      c+=1
+    else:
+      A[c-1]+=1
+      c-=1
+      if c==0: break
+    print(A[1:c+1])
+
+#6
+def tuples(n:int, k:int):
+  if n<0: return
+  A,c=[],0
+  for i in range(n+1): A.append(0)
+  while c>=0:
+    if A[c]<n:
+      A[c+1]= A[c]+1
+      c+=1
+    else:
+      A[c-1]+=1
+      c-=1
+      if c==0: break
+    if len(A[1:c+1])!=k: continue
+    print(A[1:c+1])
+
+#7
+def simetrics(A:[]):
+  value = True
+  for i in range(len(A)):
+    for j in range(len(A[i])):
+      if A[i][j] != A[j][i]: value = False
+  return value
