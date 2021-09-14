@@ -1,0 +1,120 @@
+#3
+def magicsquare(A:[]):
+  if len(A)!=len(A[0]): return False
+  B,c,H,h,c2,V,v=[],0,[],0,0,[],0
+  for a in range(1,(len(A)**2)+1):
+    B.append(a)
+  c3,c4,a=0,0,len(A)-1
+  for i in range(len(A)):
+    for j in range(len(A[0])):
+      if B.count(A[i][j])==1:
+        B.remove(A[i][j])
+      else: return False
+      c+=A[i][j]
+      c2+=A[j][i]
+    H.append(c)
+    h+=c
+    c=0
+    V.append(c2)
+    v+=c2
+    c2=0
+    c3+=A[i][i]
+    c4+=A[i][a]
+    a-=1
+  h=h/len(A)
+  v=v/len(A)
+  if h!=v: return False
+  for b in range(len(H)):
+    if H[b]!=h: return False
+    if V[b]!=v: return False
+  if h!=c3 or h!=c4: return False
+  return True
+
+#1
+def tridiagmat(T:[],b:[]):
+  if len(T)>3 or len(T)!=len(b): return
+  ci=T[2][0]/T[1][0]
+  bi=b[0]/T[1][0]
+  C,D,x=[],[],[]
+  C.append(ci)
+  D.append(bi)
+  for i in range(1,len(T[0])):
+    ci=T[2][i]/(T[1][i]-(ci*T[0][i]))
+    C.append(ci)
+  for j in range(1,len(T[0])):
+    bi=(b[j]-(bi*T[0][j]))/(T[1][j]-(C[j-1]*T[0][j]))
+    D.append(bi)
+  xn=D[len(D)-1]
+  x.append(xn)
+  for k in range(len(D)-2,-1,-1):
+    xn=D[k]-(C[k]*xn)
+    x.append(xn)
+  print(x)
+  x.reverse()
+  return x
+
+#2
+def tracmat(A:[],B:[]):
+  if len(A)!=len(A[0]) or len(B)!=len(B[0]) or len(A)!=len(B): return
+  tr=0
+  for i in range(len(A)):
+    tr+=A[i][i]*B[i][i]
+  return tr
+
+#4
+def submat(A:[]):
+  S,s,sx=[],[],[]
+  for i in range(len(A)):
+    for j in range(len(A[0])):
+      for k in range(len(A)):
+        if j<=i and k<=i:
+          s.append(A[j][k])
+      if len(s)!=0 and s not in sx:
+        sx.append(s)
+      s=[]
+    S.append(sx)
+    sx=[]
+  return S
+
+def determinant(A:[]):
+  n=len(A)
+  B=[]
+  for i in range(len(A)):
+    B.append([0]*len(A))
+    for j in range(len(A[0])):
+      B[i][j]=A[i][j]
+  for a in range(n):
+    for b in range(a+1,n):
+      if B[a][a]==0: B[a][a]= 0.000000000000000001
+      s=B[b][a]/B[a][a]
+      for c in range(n):
+        B[b][c]=B[b][c]-(s*B[a][c])
+  p=1
+  for d in range(n):
+    p*=B[d][d]
+  return p
+
+def MSPD(A:[]):
+  if len(A)!=len(A[0]): return
+  for i in range(len(A)):
+    for j in range(len(A)):
+      if j!=i and A[i][j]!=A[j][i]: return False
+      if i==j and A[i][j]<0: return False
+  B=submat(A)
+  for a in range(len(B)):
+    if determinant(B[a])<=0: return False
+  return True
+print(MSPD([[4,12,-16],[12,37,-43],[-16,-43,98]]))
+
+#5
+def cholesky(A:[]):
+  L=[]
+  for i in range(len(A)):
+    L.append([0]*len(A[0]))
+  for j in range(len(A)):
+    L[j][j]=A[j][j] ** 0.5
+    for k in range(j+1,len(A)):
+      L[k][j]=A[k][j]/L[j][j]
+      for l in range(j+1,k+1):
+        A[k][l]=A[k][l]-(L[k][j]*L[l][j])
+  return L
