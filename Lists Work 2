@@ -1,0 +1,145 @@
+#1 Tendo em vista a primeira linha do código, nela será gerada uma lista A (a partir de uma função for) que vai do 98 ao 0 em passo -1, assim resultando numa lista de 99 elementos. A partir de A, o laço for irá organizar a lista alterando os seus elementos de forma que o primeiro elemento tenha como índice o seu valor, por exemplo: com o índice i=0, temos A[i]= A[0], e A[0]=98, com isso o laço fará A[0]=A[A[0]]=A[98], assim o primeiro elemento terá o valor do último, organizando a lista em ordem crescente do zero até a metade da lista. Isso se dá pois ultrapassando o valor do meio da lista "49", teremos que o A[A[i]]=A[i], já que o índice i já estará nos valores mais altos, implicando num A[i], sendo A uma lista originalmente decrescente, menor ou igual a 49, assim fazendo A[A[i]] ser um número que já foi alterado na lista. Com isso, teremos como resultado uma lista A que cresce até o seu ponto de inflexão de índice 49, assim sendo uma lista simétrica.
+
+#2
+def soma_posit(A:[int]):
+  n,c=len(A),0
+  for i in range(n):
+    if A[i]>0: c+=A[i]
+  return c
+
+#3
+def conjuntos(A:[int], B:[int]):
+  U,I,D,DS=A+B,[],[],[]
+  for i in A:
+    for j in B:
+      if i==j and i not in I: I.append(i)
+    if B.count(i)==0: D.append(i)
+  for k in B:
+    if A.count(k)==0: DS.append(k)
+  DS=DS+D
+  return U, I, D, DS
+
+#4 (sem itertools)
+def Kendall(x:[int],y:[int]):
+  X,Y,c,d=[],[],0,0
+  for i in range(len(x)):
+    for j in range(i+1,len(x)):
+      X.append((x[i],x[j]))
+      Y.append((y[i],y[j]))
+  for k in range(len(X)):
+    if Y.count(X[k])==0: c+=1
+  return c
+#Para provar a simetria, basta adicionar outro contador e outra condição no laço for do código acima:
+def Kend(x:[int],y:[int]):
+  X,Y,c,d=[],[],0,0
+  for i in range(len(x)):
+    for j in range(i+1,len(x)):
+      X.append((x[i],x[j]))
+      Y.append((y[i],y[j]))
+  for k in range(len(X)):
+    if Y.count(X[k])==0: c+=1
+    if X.count(Y[k])==0: d+=1
+  return c,d
+#Assim vemos que os valores avaliando as combinações de x ou de y são iguais.
+
+#5
+def Asterisc(n):
+  a,b=0,0
+  while n>0:
+    for i in range(2**a):
+      b+=n
+    a+=1
+    n-=1
+  for k in range(b): print('*')
+#r=2^(n+1)-(n+2)
+
+#6
+def mult_matriz(A:[],B:[]):
+  la,ca,lb,cb=len(A),len(A[0]),len(B),len(B[0])
+  if la==cb:
+    C=[]
+    for i in range(la):
+      C.append([])
+      for j in range(cb):
+        C[i].append(0)
+        for k in range(ca):
+          C[i][j]+= A[i][k] * B[k][j]
+  return C
+
+def identidade(n):
+  B=[]
+  for i in range(n):
+    B.append([0]*n)
+    B[i][i]=1
+  return B
+
+def factorial(x):
+  a=1
+  for i in range(x,0,-1):
+    a*=i
+  return a
+
+def soma_matriz(A:[],B:[]):
+  C=[]
+  for i in range(len(A)):
+    C.append([0]*len(A))
+    for j in range(len(A[0])):
+      C[i][j]= A[i][j] + B[i][j]
+  return C
+
+def divint_matriz(A:[],x:int):
+  B=[]
+  for i in range(len(A)):
+    B.append([0]*len(A))
+    for j in range(len(A[0])):
+      B[i][j]= A[i][j] / x
+  return B
+
+def aprox_exp(A:[],m:int):
+  if m<=1: return
+  B=A[:]
+  e= soma_matriz(identidade(len(A)),B)
+  for i in range(2,m+1):
+    B=mult_matriz(B,A)
+    d=divint_matriz(B,factorial(i))
+    e= soma_matriz(e,d)
+  return e
+
+#7
+def estoc(A:[int]):
+  c,C,value=0,[],False
+  for i in range(len(A)):
+    for j in range(len(A[0])):
+      c+=A[i][j]
+    C.append(c)
+    c=0
+  for k in range(len(C)):
+    if C[k]==1:
+      value=True
+    else:
+      value=False
+      break
+  return value
+
+def double_estoc(A:[int]):
+  TA=[]
+  if len(A)==len(A[0]):
+    for i in range(len(A)):
+      TA.append([0]*len(A))
+    for j in range(len(A)):
+      for k in range(len(A[0])):
+        TA[j][k]=A[k][j]
+  elif len(A)>len(A[0]):
+    for i in range(len(A)-(len(A)-len(A[0]))):
+      TA.append([0]*len(A))
+    for j in range(len(A)-(len(A)-len(TA))):
+      for k in range(len(A)):
+        TA[j][k]=A[k][j]
+  else:
+    for i in range(len(A)+(len(A[0])-len(A))):
+      TA.append([0]*(len(A)))
+    for j in range(len(A)+(len(A[0])-len(A))):
+      for k in range(len(A[0])-(len(A[0])-len(A))):
+        TA[j][k]=A[k][j]
+  if estoc(A)==True and estoc(TA)==True: return True
+  else: return False
