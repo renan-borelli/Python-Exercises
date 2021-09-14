@@ -1,0 +1,140 @@
+#1
+def yawnoc(n:int):
+  if n<1: return
+  A=[1,2]
+  if n in A:
+    return 1
+  for i in range(3,n+1):
+    gn=yawnoc(yawnoc(i-1)+yawnoc(n-yawnoc(i-1)))
+    A.append(i)
+  return gn
+
+#2
+#a)
+def C_Symmetric(n:int,i:int,j:int):
+  m=n-1
+  if n%2==0:
+    k=m-i
+    l=m-j
+  else:
+    if i==n//2:
+      if j==n//2:
+        k=i
+        l=j
+      else:
+        k=i
+        l=m-j
+    else:
+      k=m-i
+      l=m-j
+  return (n,k,l)
+
+#b)
+def is_CSym(A:[int]):
+  if len(A)!=len(A[0]): return
+  a,b,n=0,0,len(A)
+  for i in range(len(A)):
+    for j in range(len(A[0])):
+      for k in C_Symmetric(n,i,j):
+        a=b
+        b=k
+      if A[i][j]!=A[a][b]: return False
+  return True
+
+#c)
+def D_cte(T:[]):
+  if len(T)!=len(T[0]): return
+  for i in range(len(T)):
+    A,B=[],[]
+    b=len(T)-i
+    for j in range(b):
+      a=j+i
+      A.append(T[j][a])
+      B.append(T[a][j])
+    for k in range(len(T)):
+      if A.count(A[0])!=b or B.count(B[0])!=b: return False
+  return True
+print(D_cte([[1,2,3],[4,1,2],[5,4,1]]))
+
+#d)
+#Temos que para uma matriz D-constante ser C-simétrica, basta que todas as diagonais bilateralmente simétricas a partir da maior diagonal principal (sendo ela o eixo de simetria) sejam iguais, ou seja, para qualquer valor i pertencente a n={0,n-1} (sendo n o "tamanho" das linhas e colunas da matriz) as diagonais de sentido principal iniciadas pelo ponto (0,i) e (i,0) sejam iguais (apresentem o mesmo valor em todos os pontos das duas diagonais). Desse modo, considerando uma matriz D-constante [[a,b,c],[d,a,b],[e,d,a]], ela seria C-simétrica se b=d e c=e.
+
+#e)
+def Ty_z(x:[],y:[]):
+  Ty=[]
+  for i in range(2*len(y)):
+    Ty.append([0]*len(y))
+  for i in range(len(y)):
+    a,b=i,len(y)-i
+    for j in range(b):
+      Ty[j][a]=y[i]
+      a+=1
+  z=[]
+  for i in range(len(Ty)):
+    z.append(0)
+  for i in range(len(Ty)):
+    for j in range(len(x)):
+      z[i]+=Ty[i][j]*x[j]
+  return z
+print(Ty_z([1,2,3],[4,5,6]))
+
+#f)
+#Considerando os vetores x e y, ambos de "tamanho" n, temos que o produto z equivale, para um valor i que vai de 0 a n-1 e considerando um valor j que vai de 0 a (n-1)-i, à somatória de 0 a (n-1)-i da multiplicação dada por y[j]*x[j+i], para cada valor no vetor z. Isso acontece pois ao determinarmos T(y), temos que cada diagonal superior dessa matriz (acima da diagonal principal e inclusive ela) é composta sempre pelo mesmo valor dentro da matriz y, de modo que se a diagonal começa no ponto (0,i) da matriz T(y), todos os pontos dessa diagonal terão o valor y[i], assim estabelecemos essa relação para o produto ao multiplicarmos os vetores x e y.
+#vale o algoritmo para teste:
+def test(x:[],y:[]):
+  z=[]
+  for i in range(len(x)):
+    z.append(0)
+  for i in range(len(x)):
+    for j in range(len(x)-i):
+      z[i]+=y[j]*x[j+i]
+  return z
+
+#3
+#a)
+def camarada(p:[int],q:[int],r:[int]):
+  q1,rq,qrq,ir,inv=[],[],[],[],[]
+  for i in q:
+    q1.append(q[q[q[q[i-1]-1]-1]-1])
+  for j in q1:
+    rq.append(r[j-1])
+  for k in rq:
+    qrq.append(q[k-1])
+  for j in qrq:
+    ir.append(qrq[qrq[qrq[qrq[j-1]-1]-1]-1])
+  for k in ir:
+    inv.append(r[k-1])
+  c,P=[],[]
+  for i in inv:
+    c.append(q1[i-1])
+  for j in c:
+    P.append(c[c[c[c[j-1]-1]-1]-1])
+  if p==P: return True
+  else: return False
+print(camarada([2, 1, 4, 5, 3, 6, 8, 7, 9],[6, 1, 5, 2, 3, 2, 7, 9, 8],[3, 5, 1, 6, 2, 4, 8, 9, 7]))
+
+#b)
+def camar(p:[int],r:[int]):
+  q1,rq,qrq,inv=[],[],[],[]
+  for i in p:
+    q1.append(p[p[p[p[i-1]-1]-1]-1])
+  for j in q1:
+    rq.append(r[j-1])
+  for k in rq:
+    qrq.append(p[k-1])
+  for i in qrq:
+    inv.append(qrq[qrq[qrq[qrq[i-1]-1]-1]-1])
+  c,Ic=[],[]
+  for j in inv:
+    c.append(r[j-1])
+  for k in c:
+    Ic.append(c[c[c[c[k-1]-1]-1]-1])
+  Q,q=[],[]
+  for i in Ic:
+    Q.append(q1[i-1])
+  for j in Q:
+    q.append(Q[Q[Q[Q[j-1]-1]-1]-1])
+  for i in range(1,len(p)+1):
+    if q.count(i)!=1: return False
+  return q
+print(camar([2,1,4,5,3,6,8,7,9],[3,5,1,6,2,4,8,9,7]))
